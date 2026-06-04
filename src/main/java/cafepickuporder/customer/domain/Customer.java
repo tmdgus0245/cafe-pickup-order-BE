@@ -1,4 +1,4 @@
-package customer.domain;
+package cafepickuporder.customer.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 
 @Entity

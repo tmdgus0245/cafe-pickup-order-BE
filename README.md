@@ -1,4 +1,4 @@
-# cafe-pickup-order
+# cafe-pickup-cafepickuporder.order
 
 카페 픽업 주문 앱의 핵심 흐름을 클론 코딩하며, 고객 앱과 점주 주문 관리 흐름을 직접 구현해보는 MVP 프로젝트입니다.
 
@@ -490,14 +490,14 @@ erDiagram
 ### 고객 인증
 
 ```http
-POST /api/auth/customer/signup
-POST /api/auth/customer/login
+POST /api/cafepickuporder.auth/cafepickuporder.customer/signup
+POST /api/cafepickuporder.auth/cafepickuporder.customer/login
 ```
 
 ### 점주 인증
 
 ```http
-POST /api/auth/store/login
+POST /api/cafepickuporder.auth/cafepickuporder.store/login
 ```
 
 ### 매장

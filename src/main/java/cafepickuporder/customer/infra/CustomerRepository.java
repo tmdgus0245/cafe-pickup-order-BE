@@ -1,6 +1,6 @@
-package customer.infra;
+package cafepickuporder.customer.infra;
 
-import customer.domain.Customer;
+import cafepickuporder.customer.domain.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

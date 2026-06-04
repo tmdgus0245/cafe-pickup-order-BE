@@ -1,1 +1,1 @@
-rootProject.name = "cafe-pickup-order"
+rootProject.name = "cafe-pickup-cafepickuporder.order"
