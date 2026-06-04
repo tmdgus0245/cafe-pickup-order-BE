@@ -1,8 +1,10 @@
 package cafepickuporder.auth.application;
 
 
-import cafepickuporder.auth.dto.CustomerSignupRequest;
-import cafepickuporder.auth.dto.CustomerSignupResponse;
+import cafepickuporder.auth.dto.Request.CustomerSignupRequest;
+import cafepickuporder.auth.dto.Request.LoginRequest;
+import cafepickuporder.auth.dto.Response.CustomerSignupResponse;
+import cafepickuporder.auth.dto.Response.LoginResponse;
 import cafepickuporder.customer.domain.Customer;
 import cafepickuporder.customer.infra.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +35,17 @@ public class AuthService {
         Customer savedCustomer = customerRepository.save(customer);
 
         return CustomerSignupResponse.from(savedCustomer);
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request) {
+        Customer customer = customerRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
+
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+        }
+
+        return LoginResponse.from(customer);
     }
 }

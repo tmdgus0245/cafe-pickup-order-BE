@@ -1,4 +1,4 @@
-package cafepickuporder.auth.dto;
+package cafepickuporder.auth.dto.Request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
