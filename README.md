@@ -649,3 +649,17 @@ GET /api/owner/stores/{storeId}/orders/stream
 * 혼잡도 기반 픽업 시간 추천 고도화
 * 사용자의 반복 주문 패턴 기반 빠른 주문 추천
 * AI 기반 개인화 메뉴 추천
+
+## Commit Rules
+
+* feat: 새로운 기능 추가
+* fix: 버그 수정
+* docs: 문서 수정
+* style: 코드 포맷 정리
+* refactor: 코드 구조 개선
+* test: 테스트 코드 추가/수정
+* chore: 설정, 기타 작업
+* build: 빌드/의존성 수정
+* ci: CI/CD 설정 수정
+* perf: 성능 개선
+* revert: 이전 커밋 되돌리기
