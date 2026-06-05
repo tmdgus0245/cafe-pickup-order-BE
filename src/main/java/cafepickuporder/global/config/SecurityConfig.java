@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores", "/api/stores/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/stores/*/menus", "/api/stores/*/menus/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
