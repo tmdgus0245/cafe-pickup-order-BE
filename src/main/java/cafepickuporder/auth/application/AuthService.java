@@ -1,12 +1,13 @@
 package cafepickuporder.auth.application;
 
 
-import cafepickuporder.auth.dto.Request.CustomerSignupRequest;
-import cafepickuporder.auth.dto.Request.LoginRequest;
-import cafepickuporder.auth.dto.Response.CustomerSignupResponse;
-import cafepickuporder.auth.dto.Response.LoginResponse;
+import cafepickuporder.auth.dto.request.CustomerSignupRequest;
+import cafepickuporder.auth.dto.request.LoginRequest;
+import cafepickuporder.auth.dto.response.CustomerSignupResponse;
+import cafepickuporder.auth.dto.response.LoginResponse;
 import cafepickuporder.customer.domain.Customer;
 import cafepickuporder.customer.infra.CustomerRepository;
+import cafepickuporder.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class AuthService {
 
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public CustomerSignupResponse signup(CustomerSignupRequest request) {
         if (customerRepository.existsByEmail(request.getEmail())) {
@@ -46,6 +48,10 @@ public class AuthService {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        return LoginResponse.from(customer);
+        String accessToken = jwtTokenProvider.createAccessToken(
+                customer.getId()
+        );
+
+        return LoginResponse.of(customer, accessToken);
     }
 }

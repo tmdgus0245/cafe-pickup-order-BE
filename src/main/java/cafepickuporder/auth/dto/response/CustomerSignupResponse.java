@@ -1,4 +1,4 @@
-package cafepickuporder.auth.dto.Response;
+package cafepickuporder.auth.dto.response;
 
 import cafepickuporder.customer.domain.Customer;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package cafepickuporder.auth.dto.Response;
+package cafepickuporder.auth.dto.response;
 
 import cafepickuporder.customer.domain.Customer;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,14 @@ public class LoginResponse {
     private Long customerId;
     private String email;
     private String name;
+    private String accessToken;
 
-    public static LoginResponse from(Customer customer) {
+    public static LoginResponse of(Customer customer, String accessToken) {
         return new LoginResponse(
                 customer.getId(),
                 customer.getEmail(),
-                customer.getName()
+                customer.getName(),
+                accessToken
         );
     }
 }

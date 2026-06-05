@@ -12,6 +12,9 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+jwt:
+  secret: "cafe-pickup-order-jwt-secret-key-for-development-1234567890"
+  access-token-expiration: 3600000
 
 server:
   port: 8080

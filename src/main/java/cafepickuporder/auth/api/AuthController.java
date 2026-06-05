@@ -1,10 +1,10 @@
 package cafepickuporder.auth.api;
 
 import cafepickuporder.auth.application.AuthService;
-import cafepickuporder.auth.dto.Request.CustomerSignupRequest;
-import cafepickuporder.auth.dto.Request.LoginRequest;
-import cafepickuporder.auth.dto.Response.CustomerSignupResponse;
-import cafepickuporder.auth.dto.Response.LoginResponse;
+import cafepickuporder.auth.dto.request.CustomerSignupRequest;
+import cafepickuporder.auth.dto.request.LoginRequest;
+import cafepickuporder.auth.dto.response.CustomerSignupResponse;
+import cafepickuporder.auth.dto.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
