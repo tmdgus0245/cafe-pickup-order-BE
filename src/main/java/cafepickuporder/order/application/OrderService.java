@@ -21,6 +21,7 @@ import cafepickuporder.store.infra.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import cafepickuporder.order.dto.response.OrderListResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,6 +70,14 @@ public class OrderService {
         saveOrderItems(savedOrder, request.getItems());
 
         return OrderCreateResponse.from(savedOrder);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderListResponse> getOrders(Long customerId) {
+        return orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
+                .stream()
+                .map(OrderListResponse::from)
+                .toList();
     }
 
     private int calculateTotalPrice(List<OrderItemCreateRequest> items) {
