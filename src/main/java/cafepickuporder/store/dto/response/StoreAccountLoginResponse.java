@@ -12,13 +12,18 @@ public class StoreAccountLoginResponse {
     private Long storeId;
     private String email;
     private String name;
+    private String token;
 
-    public static StoreAccountLoginResponse from(StoreAccount storeAccount) {
+    public static StoreAccountLoginResponse of(
+            StoreAccount storeAccount,
+            String token
+    ) {
         return new StoreAccountLoginResponse(
                 storeAccount.getId(),
                 storeAccount.getStore().getId(),
                 storeAccount.getEmail(),
-                storeAccount.getName()
+                storeAccount.getName(),
+                token
         );
     }
 }

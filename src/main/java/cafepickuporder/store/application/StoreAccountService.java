@@ -1,5 +1,6 @@
 package cafepickuporder.store.application;
 
+import cafepickuporder.global.security.JwtTokenProvider;
 import cafepickuporder.store.domain.Store;
 import cafepickuporder.store.domain.StoreAccount;
 import cafepickuporder.store.dto.request.StoreAccountLoginRequest;
@@ -19,6 +20,7 @@ public class StoreAccountService {
 
     private final StoreAccountRepository storeAccountRepository;
     private final StoreRepository storeRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public StoreAccountSignupResponse signup(StoreAccountSignupRequest request) {
         if (storeAccountRepository.existsByEmail(request.getEmail())) {
@@ -49,6 +51,10 @@ public class StoreAccountService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        return StoreAccountLoginResponse.from(storeAccount);
+        String token = jwtTokenProvider.createStoreAccountToken(
+                storeAccount.getStore().getId()
+        );
+
+        return StoreAccountLoginResponse.of(storeAccount, token);
     }
 }

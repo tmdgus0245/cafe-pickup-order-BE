@@ -33,6 +33,20 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .subject(String.valueOf(customerId))
+                .claim("type", "CUSTOMER")
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createStoreAccountToken(Long storeId) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + accessTokenExpiration);
+
+        return Jwts.builder()
+                .subject(String.valueOf(storeId))
+                .claim("type", "STORE")
                 .issuedAt(now)
                 .expiration(expiration)
                 .signWith(secretKey)
@@ -42,6 +56,15 @@ public class JwtTokenProvider {
     public Long getCustomerId(String token) {
         Claims claims = parseClaims(token);
         return Long.valueOf(claims.getSubject());
+    }
+
+    public String getTokenType(String token) {
+        return parseClaims(token)
+                .get("type", String.class);
+    }
+
+    public Long getStoreId(String token) {
+        return Long.parseLong(parseClaims(token).getSubject());
     }
 
     public boolean validateToken(String token) {

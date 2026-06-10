@@ -38,8 +38,10 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/stores", "/api/stores/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*/menus", "/api/stores/*/menus/*").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/stores/*/orders").hasRole("STORE")
 
                         .anyRequest().authenticated()
                 )

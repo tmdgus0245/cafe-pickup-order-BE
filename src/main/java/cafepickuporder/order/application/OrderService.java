@@ -13,6 +13,7 @@ import cafepickuporder.order.domain.OrderStatus;
 import cafepickuporder.order.dto.request.OrderCreateRequest;
 import cafepickuporder.order.dto.request.OrderItemCreateRequest;
 import cafepickuporder.order.dto.response.OrderCreateResponse;
+import cafepickuporder.order.dto.response.StoreOrderResponse;
 import cafepickuporder.order.infra.OrderItemOptionRepository;
 import cafepickuporder.order.infra.OrderItemRepository;
 import cafepickuporder.order.infra.OrderRepository;
@@ -77,6 +78,17 @@ public class OrderService {
         return orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
                 .stream()
                 .map(OrderListResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<StoreOrderResponse> getStoreOrders(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("매장을 찾을 수 없습니다."));
+
+        return orderRepository.findByStoreIdOrderByCreatedAtDesc(store.getId())
+                .stream()
+                .map(StoreOrderResponse::from)
                 .toList();
     }
 
