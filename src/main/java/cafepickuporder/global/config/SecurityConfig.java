@@ -29,11 +29,18 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
+                        .requestMatchers(
+                                "/api/auth/signup",
+                                "/api/auth/login",
+                                "/api/store-accounts/signup",
+                                "/api/store-accounts/login"
+                        ).permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/api/stores", "/api/stores/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*/menus", "/api/stores/*/menus/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/orders","/api/orders/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
