@@ -2,6 +2,7 @@ package cafepickuporder.order.api;
 
 import cafepickuporder.global.security.StoreAccountPrincipal;
 import cafepickuporder.order.application.OrderService;
+import cafepickuporder.order.dto.request.OrderRejectRequest;
 import cafepickuporder.order.dto.response.StoreOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,13 +23,62 @@ public class StoreOrderController {
             @PathVariable Long storeId,
             Authentication authentication
     ) {
+        validateStoreAccess(storeId, authentication);
+
+        return orderService.getStoreOrders(storeId);
+    }
+
+    private void validateStoreAccess(Long storeId, Authentication authentication) {
         StoreAccountPrincipal principal =
                 (StoreAccountPrincipal) authentication.getPrincipal();
 
         if (!principal.getStoreId().equals(storeId)) {
-            throw new AccessDeniedException("해당 매장의 주문을 조회할 권한이 없습니다.");
+            throw new AccessDeniedException("해당 매장의 주문을 처리할 권한이 없습니다.");
         }
+    }
 
-        return orderService.getStoreOrders(storeId);
+    @PatchMapping("/{orderId}/accept")
+    public StoreOrderResponse acceptOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        validateStoreAccess(storeId, authentication);
+
+        return orderService.acceptOrder(storeId, orderId);
+    }
+
+    @PatchMapping("/{orderId}/ready")
+    public StoreOrderResponse markOrderReady(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        validateStoreAccess(storeId, authentication);
+
+        return orderService.markOrderReady(storeId, orderId);
+    }
+
+    @PatchMapping("/{orderId}/complete")
+    public StoreOrderResponse completeOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            Authentication authentication
+    ) {
+        validateStoreAccess(storeId, authentication);
+
+        return orderService.completeOrder(storeId, orderId);
+    }
+
+    @PatchMapping("/{orderId}/reject")
+    public StoreOrderResponse rejectOrder(
+            @PathVariable Long storeId,
+            @PathVariable Long orderId,
+            @RequestBody OrderRejectRequest request,
+            Authentication authentication
+    ) {
+        validateStoreAccess(storeId, authentication);
+
+        return orderService.rejectOrder(storeId, orderId, request);
     }
 }

@@ -1,5 +1,6 @@
 package cafepickuporder.order.dto.request;
 
+import cafepickuporder.payment.domain.PaymentMethod;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,4 +14,5 @@ public class OrderCreateRequest {
     private Long storeId;
     private LocalDateTime requestedPickupTime;
     private List<OrderItemCreateRequest> items;
+    private PaymentMethod paymentMethod;
 }

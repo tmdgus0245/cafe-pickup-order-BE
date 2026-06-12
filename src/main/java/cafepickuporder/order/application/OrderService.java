@@ -10,13 +10,18 @@ import cafepickuporder.order.domain.Order;
 import cafepickuporder.order.domain.OrderItem;
 import cafepickuporder.order.domain.OrderItemOption;
 import cafepickuporder.order.domain.OrderStatus;
+import cafepickuporder.order.dto.request.OrderCancelRequest;
 import cafepickuporder.order.dto.request.OrderCreateRequest;
 import cafepickuporder.order.dto.request.OrderItemCreateRequest;
+import cafepickuporder.order.dto.request.OrderRejectRequest;
 import cafepickuporder.order.dto.response.OrderCreateResponse;
 import cafepickuporder.order.dto.response.StoreOrderResponse;
 import cafepickuporder.order.infra.OrderItemOptionRepository;
 import cafepickuporder.order.infra.OrderItemRepository;
 import cafepickuporder.order.infra.OrderRepository;
+import cafepickuporder.payment.domain.Payment;
+import cafepickuporder.payment.domain.PaymentMethod;
+import cafepickuporder.payment.infra.PaymentRepository;
 import cafepickuporder.store.domain.Store;
 import cafepickuporder.store.infra.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +41,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderItemOptionRepository orderItemOptionRepository;
+    private final PaymentRepository paymentRepository;
 
     private final CustomerRepository customerRepository;
     private final StoreRepository storeRepository;
@@ -70,7 +76,32 @@ public class OrderService {
 
         saveOrderItems(savedOrder, request.getItems());
 
-        return OrderCreateResponse.from(savedOrder);
+        Payment payment = createMockPayment(savedOrder, request.getPaymentMethod());
+
+        return OrderCreateResponse.from(savedOrder, payment);
+    }
+
+    private Payment createMockPayment(Order order, PaymentMethod paymentMethod) {
+        PaymentMethod method = paymentMethod == null
+                ? PaymentMethod.MOCK_CARD
+                : paymentMethod;
+
+        Payment payment = new Payment(
+                order,
+                generatePaymentKey(),
+                method,
+                order.getTotalPrice()
+        );
+
+        return paymentRepository.save(payment);
+    }
+
+    private String generatePaymentKey() {
+        return "MOCK-" + UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 16)
+                .toUpperCase();
     }
 
     @Transactional(readOnly = true)
@@ -161,5 +192,70 @@ public class OrderService {
                 .toString()
                 .substring(0, 8)
                 .toUpperCase();
+    }
+
+    private Order getStoreOrder(Long storeId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        if (!order.getStore().getId().equals(storeId)) {
+            throw new IllegalArgumentException("해당 매장의 주문이 아닙니다.");
+        }
+
+        return order;
+    }
+
+    public StoreOrderResponse acceptOrder(Long storeId, Long orderId) {
+        Order order = getStoreOrder(storeId, orderId);
+        order.accept();
+
+        return StoreOrderResponse.from(order);
+    }
+
+    public StoreOrderResponse markOrderReady(Long storeId, Long orderId) {
+        Order order = getStoreOrder(storeId, orderId);
+        order.markReady();
+
+        return StoreOrderResponse.from(order);
+    }
+
+    public StoreOrderResponse completeOrder(Long storeId, Long orderId) {
+        Order order = getStoreOrder(storeId, orderId);
+        order.complete();
+
+        return StoreOrderResponse.from(order);
+    }
+
+    public StoreOrderResponse rejectOrder(Long storeId, Long orderId, OrderRejectRequest request) {
+        Order order = getStoreOrder(storeId, orderId);
+
+        order.reject(request.getReason());
+        cancelPaymentIfExists(order);
+
+        return StoreOrderResponse.from(order);
+    }
+
+    public OrderCreateResponse cancelOrder(Long customerId, Long orderId, OrderCancelRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+
+        if (!order.getCustomer().getId().equals(customerId)) {
+            throw new IllegalArgumentException("해당 고객의 주문이 아닙니다.");
+        }
+
+        order.cancel(request.getReason());
+
+        Payment payment = cancelPaymentIfExists(order);
+
+        return OrderCreateResponse.from(order, payment);
+    }
+
+    private Payment cancelPaymentIfExists(Order order) {
+        return paymentRepository.findByOrderId(order.getId())
+                .map(payment -> {
+                    payment.cancel();
+                    return payment;
+                })
+                .orElse(null);
     }
 }

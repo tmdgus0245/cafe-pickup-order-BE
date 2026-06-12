@@ -1,6 +1,7 @@
 package cafepickuporder.order.api;
 
 import cafepickuporder.order.application.OrderService;
+import cafepickuporder.order.dto.request.OrderCancelRequest;
 import cafepickuporder.order.dto.request.OrderCreateRequest;
 import cafepickuporder.order.dto.response.OrderCreateResponse;
 import cafepickuporder.order.dto.response.OrderListResponse;
@@ -31,5 +32,14 @@ public class OrderController {
             @RequestParam Long customerId
     ) {
         return orderService.getOrders(customerId);
+    }
+
+    @PatchMapping("/{orderId}/cancel")
+    public OrderCreateResponse cancelOrder(
+            @RequestParam Long customerId,
+            @PathVariable Long orderId,
+            @RequestBody OrderCancelRequest request
+    ) {
+        return orderService.cancelOrder(customerId, orderId, request);
     }
 }

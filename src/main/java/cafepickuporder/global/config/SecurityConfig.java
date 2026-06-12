@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*/orders").hasRole("STORE")
+                        .requestMatchers(HttpMethod.PATCH, "/api/stores/*/orders/*/**").hasRole("STORE")
+                        .requestMatchers(HttpMethod.PATCH, "/api/orders/*/cancel").permitAll()
 
                         .anyRequest().authenticated()
                 )

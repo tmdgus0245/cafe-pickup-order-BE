@@ -68,4 +68,47 @@ public class Order {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void accept() {
+        validateStatus(OrderStatus.REQUESTED);
+        this.status = OrderStatus.ACCEPTED;
+        this.acceptedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markReady() {
+        validateStatus(OrderStatus.ACCEPTED);
+        this.status = OrderStatus.READY;
+        this.readyAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void complete() {
+        validateStatus(OrderStatus.READY);
+        this.status = OrderStatus.COMPLETED;
+        this.completedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void reject(String reason) {
+        validateStatus(OrderStatus.REQUESTED);
+        this.status = OrderStatus.REJECTED;
+        this.rejectReason = reason;
+        this.rejectedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void cancel(String reason) {
+        validateStatus(OrderStatus.REQUESTED);
+        this.status = OrderStatus.CANCELED;
+        this.cancelReason = reason;
+        this.canceledAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    private void validateStatus(OrderStatus expectedStatus) {
+        if (this.status != expectedStatus) {
+            throw new IllegalStateException("Invalid order status transition.");
+        }
+    }
 }
