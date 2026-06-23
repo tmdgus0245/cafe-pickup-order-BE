@@ -37,12 +37,20 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/stores", "/api/stores/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/stores/*/menus", "/api/stores/*/menus/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/stores/{storeId}/categories",
+                                "/api/stores/*/categories",
+                                "/api/stores/{storeId}/menus",
+                                "/api/stores/*/menus",
+                                "/api/stores/{storeId}/menus/{menuId}",
+                                "/api/stores/*/menus/*"
+                        ).permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*/orders").hasRole("STORE")
                         .requestMatchers(HttpMethod.PATCH, "/api/stores/*/orders/*/**").hasRole("STORE")
+                        .requestMatchers("/api/stores/*/manage/**").hasRole("STORE")
                         .requestMatchers(HttpMethod.PATCH, "/api/orders/*/cancel").permitAll()
 
                         .anyRequest().authenticated()

@@ -69,4 +69,23 @@ public class Menu {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void update(
+            MenuCategory category,
+            String name,
+            String description,
+            Integer price,
+            String imageUrl,
+            MenuStatus status,
+            Integer displayOrder
+    ) {
+        this.category = category;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.status = status;
+        this.displayOrder = displayOrder;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

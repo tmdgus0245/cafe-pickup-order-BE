@@ -8,4 +8,6 @@ import java.util.List;
 public interface MenuOptionRepository extends JpaRepository<MenuOption, Long> {
 
     List<MenuOption> findByOptionGroupIdOrderByDisplayOrderAsc(Long optionGroupId);
+
+    void deleteByOptionGroupId(Long optionGroupId);
 }

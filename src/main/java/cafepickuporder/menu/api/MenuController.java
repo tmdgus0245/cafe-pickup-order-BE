@@ -1,6 +1,7 @@
 package cafepickuporder.menu.api;
 
 import cafepickuporder.menu.application.MenuQueryService;
+import cafepickuporder.menu.dto.response.MenuCategoryResponse;
 import cafepickuporder.menu.dto.response.MenuDetailResponse;
 import cafepickuporder.menu.dto.response.MenuResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,13 @@ import java.util.List;
 public class MenuController {
 
     private final MenuQueryService menuQueryService;
+
+    @GetMapping("/api/stores/{storeId}/categories")
+    public ResponseEntity<List<MenuCategoryResponse>> getCategoriesByStore(
+            @PathVariable Long storeId
+    ) {
+        return ResponseEntity.ok(menuQueryService.getCategoriesByStore(storeId));
+    }
 
     @GetMapping("/api/stores/{storeId}/menus")
     public ResponseEntity<List<MenuResponse>> getMenusByStore(

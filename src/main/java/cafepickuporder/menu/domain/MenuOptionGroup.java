@@ -50,4 +50,17 @@ public class MenuOptionGroup {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void update(
+            String name,
+            Boolean required,
+            Integer minSelect,
+            Integer maxSelect
+    ) {
+        this.name = name;
+        this.required = required;
+        this.minSelect = minSelect;
+        this.maxSelect = maxSelect;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

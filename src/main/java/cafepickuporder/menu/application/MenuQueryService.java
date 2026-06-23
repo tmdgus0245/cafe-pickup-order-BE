@@ -2,10 +2,12 @@ package cafepickuporder.menu.application;
 
 import cafepickuporder.menu.domain.Menu;
 import cafepickuporder.menu.domain.MenuOptionGroup;
+import cafepickuporder.menu.dto.response.MenuCategoryResponse;
 import cafepickuporder.menu.dto.response.MenuDetailResponse;
 import cafepickuporder.menu.dto.response.MenuOptionGroupResponse;
 import cafepickuporder.menu.dto.response.MenuOptionResponse;
 import cafepickuporder.menu.dto.response.MenuResponse;
+import cafepickuporder.menu.infra.MenuCategoryRepository;
 import cafepickuporder.menu.infra.MenuOptionGroupRepository;
 import cafepickuporder.menu.infra.MenuOptionRepository;
 import cafepickuporder.menu.infra.MenuRepository;
@@ -21,8 +23,16 @@ import java.util.List;
 public class MenuQueryService {
 
     private final MenuRepository menuRepository;
+    private final MenuCategoryRepository menuCategoryRepository;
     private final MenuOptionGroupRepository menuOptionGroupRepository;
     private final MenuOptionRepository menuOptionRepository;
+
+    public List<MenuCategoryResponse> getCategoriesByStore(Long storeId) {
+        return menuCategoryRepository.findByStoreIdOrderByDisplayOrderAsc(storeId)
+                .stream()
+                .map(MenuCategoryResponse::from)
+                .toList();
+    }
 
     public List<MenuResponse> getMenusByStore(Long storeId) {
         return menuRepository.findByStoreIdOrderByDisplayOrderAsc(storeId)

@@ -39,4 +39,10 @@ public class MenuCategory {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void update(String name, Integer displayOrder) {
+        this.name = name;
+        this.displayOrder = displayOrder;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

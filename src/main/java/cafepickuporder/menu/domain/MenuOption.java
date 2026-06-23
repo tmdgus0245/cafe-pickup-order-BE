@@ -47,4 +47,11 @@ public class MenuOption {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void update(String name, Integer additionalPrice, Integer displayOrder) {
+        this.name = name;
+        this.additionalPrice = additionalPrice;
+        this.displayOrder = displayOrder;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
