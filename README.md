@@ -56,6 +56,8 @@
 * 로그인
 * 현재 위치 기반 매장 목록 조회
 * 매장 상세 조회
+* 자주 가는 매장 즐겨찾기 등록 및 해제
+* 즐겨찾기 매장 목록 조회
 * 매장별 주문 방식 확인
 * 메뉴 카테고리 조회
 * 메뉴 상세 조회
@@ -226,7 +228,9 @@ REQUESTED → CANCELED
 ```mermaid
 erDiagram
     CUSTOMERS ||--o{ ORDERS : places
+    CUSTOMERS ||--o{ CUSTOMER_FAVORITE_STORES : registers
     STORES ||--o{ STORE_ACCOUNTS : has
+    STORES ||--o{ CUSTOMER_FAVORITE_STORES : favorited_by
     STORES ||--o{ MENU_CATEGORIES : has
     STORES ||--o{ MENUS : sells
     STORES ||--o{ ORDERS : receives
@@ -260,10 +264,18 @@ erDiagram
         time open_time
         time close_time
         varchar status
-        varchar order_type
+        boolean app_order_available
+        boolean dine_in_available
         int average_preparation_minutes
         datetime created_at
         datetime updated_at
+    }
+
+    CUSTOMER_FAVORITE_STORES {
+        bigint id PK
+        bigint customer_id FK
+        bigint store_id FK
+        datetime created_at
     }
 
     STORE_ACCOUNTS {
@@ -384,10 +396,16 @@ erDiagram
 
 일반 고객 계정 정보를 저장합니다.
 
+### customer_favorite_stores
+
+고객이 즐겨찾기로 등록한 매장을 저장합니다.
+즐겨찾기는 매장 자체의 속성이 아니라 고객마다 달라지는 정보이므로 `customers`와 `stores`를 연결하는 별도 테이블로 관리합니다.
+동일한 고객이 같은 매장을 중복 등록할 수 없습니다.
+
 ### stores
 
 카페 매장 정보를 저장합니다.
-매장 위치, 운영 상태, 주문 방식, 평균 제조 시간 등을 관리합니다.
+매장 위치, 운영 상태, 앱 주문 가능 여부, 매장 내 식사 가능 여부, 평균 제조 시간 등을 관리합니다.
 
 ### store_accounts
 
@@ -507,6 +525,16 @@ GET /api/stores
 GET /api/stores/{storeId}
 GET /api/stores/{storeId}/menus
 ```
+
+### 즐겨찾기 매장
+
+```http
+POST /api/customers/me/favorite-stores/{storeId}
+DELETE /api/customers/me/favorite-stores/{storeId}
+GET /api/customers/me/favorite-stores
+```
+
+모든 즐겨찾기 API는 고객 Access Token이 필요합니다.
 
 ### 주문
 
