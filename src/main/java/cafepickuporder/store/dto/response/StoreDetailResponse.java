@@ -1,6 +1,5 @@
 package cafepickuporder.store.dto.response;
 
-import cafepickuporder.store.domain.OrderType;
 import cafepickuporder.store.domain.Store;
 import cafepickuporder.store.domain.StoreStatus;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,8 @@ public class StoreDetailResponse {
     private LocalTime openTime;
     private LocalTime closeTime;
     private StoreStatus status;
-    private OrderType orderType;
+    private boolean appOrderAvailable;
+    private boolean dineInAvailable;
     private Integer averagePreparationMinutes;
 
     public static StoreDetailResponse from(Store store) {
@@ -40,7 +40,8 @@ public class StoreDetailResponse {
                 store.getOpenTime(),
                 store.getCloseTime(),
                 store.getStatus(),
-                store.getOrderType(),
+                store.isAppOrderAvailable(),
+                store.isDineInAvailable(),
                 store.getAveragePreparationMinutes()
         );
     }

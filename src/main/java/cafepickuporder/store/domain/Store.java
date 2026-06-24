@@ -47,9 +47,11 @@ public class Store {
     @Column(nullable = false)
     private StoreStatus status;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderType orderType;
+    private boolean appOrderAvailable;
+
+    @Column(nullable = false)
+    private boolean dineInAvailable;
 
     private Integer averagePreparationMinutes;
 
@@ -69,7 +71,8 @@ public class Store {
             LocalTime openTime,
             LocalTime closeTime,
             StoreStatus status,
-            OrderType orderType,
+            boolean appOrderAvailable,
+            boolean dineInAvailable,
             Integer averagePreparationMinutes
     ) {
         this.name = name;
@@ -82,7 +85,8 @@ public class Store {
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.status = status;
-        this.orderType = orderType;
+        this.appOrderAvailable = appOrderAvailable;
+        this.dineInAvailable = dineInAvailable;
         this.averagePreparationMinutes = averagePreparationMinutes;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
