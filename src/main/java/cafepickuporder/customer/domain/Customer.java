@@ -29,6 +29,9 @@ public class Customer {
     @Column(nullable = false)
     private String phone;
 
+    @Column(length = 500)
+    private String profileImageUrl;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,6 +42,23 @@ public class Customer {
         this.name = name;
         this.phone = phone;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updateProfile(String name, String email, String profileImageUrl) {
+        this.name = name;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
         this.updatedAt = LocalDateTime.now();
     }
 }
