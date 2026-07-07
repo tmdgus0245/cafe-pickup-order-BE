@@ -10,6 +10,7 @@ import cafepickuporder.store.dto.response.StoreAccountSignupResponse;
 import cafepickuporder.store.infra.StoreAccountRepository;
 import cafepickuporder.store.infra.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class StoreAccountService {
     private final StoreAccountRepository storeAccountRepository;
     private final StoreRepository storeRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     public StoreAccountSignupResponse signup(StoreAccountSignupRequest request) {
         if (storeAccountRepository.existsByEmail(request.getEmail())) {
@@ -33,7 +35,7 @@ public class StoreAccountService {
         StoreAccount storeAccount = new StoreAccount(
                 store,
                 request.getEmail(),
-                request.getPassword(),
+                passwordEncoder.encode(request.getPassword()),
                 request.getName()
         );
 
@@ -47,7 +49,7 @@ public class StoreAccountService {
         StoreAccount storeAccount = storeAccountRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("점주 계정을 찾을 수 없습니다."));
 
-        if (!storeAccount.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), storeAccount.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 

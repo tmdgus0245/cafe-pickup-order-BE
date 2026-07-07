@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 "/api/stores/{storeId}/menus/{menuId}",
                                 "/api/stores/*/menus/*"
                         ).permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/orders", "/api/orders/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stores/*/orders").hasRole("STORE")

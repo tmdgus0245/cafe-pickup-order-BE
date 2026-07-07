@@ -10,6 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +72,32 @@ public class CustomerService {
     private Customer getCustomer(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("고객을 찾을 수 없습니다."));
+    }
+
+    public CustomerProfileResponse updateProfileImage(Long customerId, MultipartFile image) {
+        Customer customer = getCustomer(customerId);
+
+        if (image.isEmpty()) {
+            throw new IllegalArgumentException("프로필 이미지 파일이 비어 있습니다.");
+        }
+
+        try {
+            String originalFilename = image.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String fileName = UUID.randomUUID() + extension;
+
+            Path uploadPath = Paths.get("uploads/profile-images/" + customerId);
+            Files.createDirectories(uploadPath);
+
+            Path filePath = uploadPath.resolve(fileName);
+            image.transferTo(filePath.toFile());
+
+            String profileImageUrl = "/uploads/profile-images/" + customerId + "/" + fileName;
+            customer.updateProfileImage(profileImageUrl);
+
+            return CustomerProfileResponse.from(customer);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("프로필 이미지 저장에 실패했습니다.");
+        }
     }
 }

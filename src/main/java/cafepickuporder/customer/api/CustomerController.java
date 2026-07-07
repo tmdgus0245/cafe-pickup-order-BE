@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,5 +54,15 @@ public class CustomerController {
     ) {
         customerService.updatePassword(userDetails.getCustomerId(), request);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/customers/me/profile-image")
+    public ResponseEntity<CustomerProfileResponse> updateProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("image") MultipartFile image
+    ) {
+        return ResponseEntity.ok(
+                customerService.updateProfileImage(userDetails.getCustomerId(), image)
+        );
     }
 }
