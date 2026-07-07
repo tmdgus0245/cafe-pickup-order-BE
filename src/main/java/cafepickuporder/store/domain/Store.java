@@ -91,4 +91,10 @@ public class Store {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void deactivate() {
+        this.status = StoreStatus.INACTIVE;
+        this.appOrderAvailable = false;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

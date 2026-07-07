@@ -25,7 +25,7 @@ public class StoreAccountService {
     private final PasswordEncoder passwordEncoder;
 
     public StoreAccountSignupResponse signup(StoreAccountSignupRequest request) {
-        if (storeAccountRepository.existsByEmail(request.getEmail())) {
+        if (storeAccountRepository.existsByEmailAndWithdrawnFalse(request.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 점주 이메일입니다.");
         }
 
@@ -46,7 +46,7 @@ public class StoreAccountService {
 
     @Transactional(readOnly = true)
     public StoreAccountLoginResponse login(StoreAccountLoginRequest request) {
-        StoreAccount storeAccount = storeAccountRepository.findByEmail(request.getEmail())
+        StoreAccount storeAccount = storeAccountRepository.findByEmailAndWithdrawnFalse(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("점주 계정을 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), storeAccount.getPassword())) {
@@ -54,9 +54,30 @@ public class StoreAccountService {
         }
 
         String token = jwtTokenProvider.createStoreAccountToken(
-                storeAccount.getStore().getId()
+                storeAccount.getStore().getId(),
+                storeAccount.getId()
         );
 
         return StoreAccountLoginResponse.of(storeAccount, token);
+    }
+
+    public void withdraw(Long storeAccountId) {
+        StoreAccount storeAccount = storeAccountRepository.findById(storeAccountId)
+                .orElseThrow(() -> new IllegalArgumentException("점주 계정을 찾을 수 없습니다."));
+
+        if (storeAccount.isWithdrawn()) {
+            throw new IllegalArgumentException("이미 탈퇴한 점주 계정입니다.");
+        }
+
+        Store store = storeAccount.getStore();
+
+        storeAccount.withdraw();
+
+        long activeManagerCount =
+                storeAccountRepository.countByStoreIdAndWithdrawnFalse(store.getId());
+
+        if (activeManagerCount == 0) {
+            store.deactivate();
+        }
     }
 }

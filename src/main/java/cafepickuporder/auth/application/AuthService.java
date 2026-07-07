@@ -23,7 +23,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public CustomerSignupResponse signup(CustomerSignupRequest request) {
-        if (customerRepository.existsByEmail(request.getEmail())) {
+        if (customerRepository.existsByEmailAndWithdrawnFalse(request.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
@@ -41,7 +41,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
-        Customer customer = customerRepository.findByEmail(request.getEmail())
+        Customer customer = customerRepository.findByEmailAndWithdrawnFalse(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), customer.getPassword())) {

@@ -10,4 +10,10 @@ public interface StoreAccountRepository extends JpaRepository<StoreAccount, Long
     Optional<StoreAccount> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    Optional<StoreAccount> findByEmailAndWithdrawnFalse(String email);
+
+    boolean existsByEmailAndWithdrawnFalse(String email);
+
+    long countByStoreIdAndWithdrawnFalse(Long storeId);
 }

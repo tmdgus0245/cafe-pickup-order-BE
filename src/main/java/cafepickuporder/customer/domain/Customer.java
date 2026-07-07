@@ -32,6 +32,9 @@ public class Customer {
     @Column(length = 500)
     private String profileImageUrl;
 
+    private boolean withdrawn;
+    private LocalDateTime withdrawnAt;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -64,6 +67,15 @@ public class Customer {
 
     public void updateProfileImage(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void withdraw() {
+        this.email = "withdrawn_" + this.id + "_" + this.email;
+        this.phone = "withdrawn_" + this.id + "_" + this.phone;
+        this.profileImageUrl = null;
+        this.withdrawn = true;
+        this.withdrawnAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 }

@@ -34,7 +34,7 @@ public class CustomerService {
     public CustomerProfileResponse updateProfile(Long customerId, CustomerProfileUpdateRequest request) {
         Customer customer = getCustomer(customerId);
 
-        if (customerRepository.existsByEmailAndIdNot(request.getEmail(), customerId)) {
+        if (customerRepository.existsByEmailAndIdNotAndWithdrawnFalse(request.getEmail(), customerId)) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
@@ -50,7 +50,7 @@ public class CustomerService {
     public CustomerProfileResponse updatePhone(Long customerId, CustomerPhoneUpdateRequest request) {
         Customer customer = getCustomer(customerId);
 
-        if (customerRepository.existsByPhoneAndIdNot(request.getPhone(), customerId)) {
+        if (customerRepository.existsByPhoneAndIdNotAndWithdrawnFalse(request.getPhone(), customerId)) {
             throw new IllegalArgumentException("이미 사용 중인 휴대폰 번호입니다.");
         }
 
@@ -70,8 +70,14 @@ public class CustomerService {
     }
 
     private Customer getCustomer(Long customerId) {
-        return customerRepository.findById(customerId)
+        Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new IllegalArgumentException("고객을 찾을 수 없습니다."));
+
+        if (customer.isWithdrawn()) {
+            throw new IllegalArgumentException("탈퇴한 고객 계정입니다.");
+        }
+
+        return customer;
     }
 
     public CustomerProfileResponse updateProfileImage(Long customerId, MultipartFile image) {
@@ -99,5 +105,10 @@ public class CustomerService {
         } catch (Exception e) {
             throw new IllegalArgumentException("프로필 이미지 저장에 실패했습니다.");
         }
+    }
+
+    public void withdraw(Long customerId) {
+        Customer customer = getCustomer(customerId);
+        customer.withdraw();
     }
 }

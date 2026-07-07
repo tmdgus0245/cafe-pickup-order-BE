@@ -65,4 +65,12 @@ public class CustomerController {
                 customerService.updateProfileImage(userDetails.getCustomerId(), image)
         );
     }
+
+    @DeleteMapping("/api/customers/me")
+    public ResponseEntity<Void> withdraw(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        customerService.withdraw(userDetails.getCustomerId());
+        return ResponseEntity.noContent().build();
+    }
 }

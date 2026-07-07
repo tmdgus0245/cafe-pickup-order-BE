@@ -40,17 +40,23 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createStoreAccountToken(Long storeId) {
+    public String createStoreAccountToken(Long storeId, Long storeAccountId) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
                 .subject(String.valueOf(storeId))
                 .claim("type", "STORE")
+                .claim("storeAccountId", storeAccountId)
                 .issuedAt(now)
                 .expiration(expiration)
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Long getStoreAccountId(String token) {
+        return parseClaims(token)
+                .get("storeAccountId", Long.class);
     }
 
     public Long getCustomerId(String token) {

@@ -63,8 +63,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void setStoreAuthentication(String token) {
         Long storeId = jwtTokenProvider.getStoreId(token);
+        Long storeAccountId = jwtTokenProvider.getStoreAccountId(token);
 
-        StoreAccountPrincipal principal = new StoreAccountPrincipal(storeId);
+        StoreAccountPrincipal principal = new StoreAccountPrincipal(storeAccountId, storeId);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(

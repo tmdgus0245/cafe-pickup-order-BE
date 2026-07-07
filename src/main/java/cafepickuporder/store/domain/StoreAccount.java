@@ -21,6 +21,9 @@ public class StoreAccount {
     private String password;
     private String name;
 
+    private boolean withdrawn;
+    private LocalDateTime withdrawnAt;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,6 +42,13 @@ public class StoreAccount {
         this.password = password;
         this.name = name;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void withdraw() {
+        this.email = "withdrawn_" + this.id + "_" + this.email;
+        this.withdrawn = true;
+        this.withdrawnAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 }
