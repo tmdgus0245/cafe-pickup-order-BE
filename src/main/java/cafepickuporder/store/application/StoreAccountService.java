@@ -3,6 +3,7 @@ package cafepickuporder.store.application;
 import cafepickuporder.global.security.JwtTokenProvider;
 import cafepickuporder.store.domain.Store;
 import cafepickuporder.store.domain.StoreAccount;
+import cafepickuporder.store.domain.StoreStatus;
 import cafepickuporder.store.dto.request.StoreAccountLoginRequest;
 import cafepickuporder.store.dto.request.StoreAccountSignupRequest;
 import cafepickuporder.store.dto.response.StoreAccountLoginResponse;
@@ -29,11 +30,26 @@ public class StoreAccountService {
             throw new IllegalArgumentException("이미 사용 중인 점주 이메일입니다.");
         }
 
-        Store store = storeRepository.findById(request.getStoreId())
-                .orElseThrow(() -> new IllegalArgumentException("매장을 찾을 수 없습니다."));
+        Store store = Store.builder()
+                .name(request.getStoreName())
+                .description(request.getStoreDescription())
+                .address(request.getStoreAddress())
+                .detailAddress(request.getStoreDetailAddress())
+                .phone(request.getStorePhone())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
+                .status(StoreStatus.OPEN)
+                .appOrderAvailable(request.isAppOrderAvailable())
+                .dineInAvailable(request.isDineInAvailable())
+                .averagePreparationMinutes(request.getAveragePreparationMinutes())
+                .build();
+
+        Store savedStore = storeRepository.save(store);
 
         StoreAccount storeAccount = new StoreAccount(
-                store,
+                savedStore,
                 request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getName()
